@@ -1,13 +1,16 @@
 #include "converter.h"
 
-double	get_voltage_ref(Adc *adc) {
-	double voltage_reference = adc->highest_voltage - adc->lowest_voltage;
+void print_result(int num, int bit_res)
+{
+	unsigned int mask = (1U << (bit_res - 1)); // Start from MSB
+	char bit;
+	int i = 0;
 
-	return (voltage_reference);
-}
-
-double	get_resolution(Adc *adc) {
-	double resolution = adc->voltage_reference / (pow(2, adc->bits) - 1);
-
-	return (resolution);
+	while (i < bit_res) {
+		bit = ((num & mask) != 0) ? '1' : '0';  // Extract correct bit
+		write(1, &bit, 1);
+		mask >>= 1; // Shift mask right
+		i++;
+	}
+	write(1, "\n", 1);
 }
